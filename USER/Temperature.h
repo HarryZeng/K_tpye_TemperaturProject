@@ -22,9 +22,19 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
 
+#define SensorNo    		T_M4   /*The number of sensor*/
+#define SensorTIME			5	
+
+#define RS485_PORT		GPIOB
+#define RS485_PIN			GPIO_Pin_4
+	
+#define RS485_T   GPIO_SetBits(RS485_PORT,RS485_PIN)
+#define RS485_R		GPIO_ResetBits(RS485_PORT,RS485_PIN)
+
+	
 typedef enum SENSOR_INDEX
 {
-	T_M1=0x00,				
+	T_M1=0x01,				
 	T_M2,
 	T_M3,
 	T_M4,
@@ -44,7 +54,8 @@ typedef struct TEMPERATURE_DATA
 /* Exported functions ------------------------------------------------------- */
 void packet_data(void);
 void getSensorNo(uint8_t *__BUF);
-
+float ADCget(void);
+void TemperatureInit(void);
 #endif /* __INFRARED_H */
 /**
   * @}

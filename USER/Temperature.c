@@ -43,8 +43,7 @@
 //#include "radar.h"
 #include "Temperature.h"
 #include "adc.h"
-
-#define SensorNo    T_M2   /*The number of sensor*/
+#include "led.h"
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -60,6 +59,25 @@
 uint8_t __data[10];
 	
 void SendPackage(uint8_t *package);
+extern float ADCvalue;
+
+void TemperatureInit(void)
+{
+	 GPIO_InitTypeDef GPIO_InitStructure;
+  
+  /* USART1 Pins configuration ************************************************/
+  /* Connect pin to Periph */
+  /* Configure pins as AF pushpull */
+		
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);	
+  GPIO_InitStructure.GPIO_Pin = RS485_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
+  GPIO_Init(RS485_PORT, &GPIO_InitStructure); 
+	
+	RS485_R;
+}
+
 
 float ADCget(void)
 {
@@ -68,7 +86,7 @@ float ADCget(void)
 	float Temp;
 	float CaliValue;
 	
-	CaliValue=-2.5;
+	CaliValue=1.3;
 	
 	adcx=Get_Adc_Average(ADC_Channel_1,10);
 	
@@ -87,11 +105,7 @@ void packet_data(void)
 {
 		uint8_t sum;
 		uint8_t i=0,k=0;
-		float ADCvalue;
 	
-		ADCvalue = ADCget();
-		
-		
 		__data[i++]= 0x5a;							/*package head*/
 		__data[i++]= 0x5a;
 		__data[i++]= 0x45;							/*data type*/
@@ -107,14 +121,18 @@ void packet_data(void)
 		__data[i++]= sum;
 		__data[i++]= SensorNo;				/*ID*/
 		
-		for(k=0;k<sizeof(__data);k++)
+		for(k=0;k<sizeof(__data)+1;k++)
 		{
+			RS485_T;
+			LED0=!LED0;
 			USART_SendData(USART1,__data[k]);
 			while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET){}
+			RS485_R;
 		}
 		
 }
 
+int16_t counter=0;
 
 void getSensorNo(uint8_t *__BUF)
 {
@@ -130,7 +148,8 @@ void getSensorNo(uint8_t *__BUF)
 			ID = __BUF[2];
 			if(ID == SensorNo)
 			{
-				packet_data();
+					packet_data();
+					counter++;
 			}
 		}
 }

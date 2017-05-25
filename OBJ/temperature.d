@@ -31,3 +31,4 @@
 ..\obj\temperature.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\temperature.o: ..\STM32F10x_FWLib\inc\misc.h
 ..\obj\temperature.o: ..\HARDWARE\ADC\adc.h
+..\obj\temperature.o: ..\HARDWARE\LED\led.h
