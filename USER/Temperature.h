@@ -22,7 +22,7 @@
 /* Exported macro ------------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
 
-#define SensorNo    		T_M4   /*The number of sensor*/
+#define SensorNo    		T_M2   /*The number of sensor*/
 #define SensorTIME			5	
 
 #define RS485_PORT		GPIOB
